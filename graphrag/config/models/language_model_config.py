@@ -15,7 +15,8 @@ from graphrag.config.errors import (
     AzureDeploymentNameMissingError,
     ConflictingSettingsError,
 )
-from graphrag.language_model.factory import ModelFactory
+# Remove direct import to break circular dependency
+# from graphrag.language_model.factory import ModelFactory
 
 
 class LanguageModelConfig(BaseModel):
@@ -87,6 +88,9 @@ class LanguageModelConfig(BaseModel):
         KeyError
             If the model name is not recognized.
         """
+        # Lazy import to break circular dependency
+        from graphrag.language_model.factory import ModelFactory
+        
         # Type should be contained by the registered models
         if not ModelFactory.is_supported_model(self.type):
             msg = f"Model type {self.type} is not recognized, must be one of {ModelFactory.get_chat_models() + ModelFactory.get_embedding_models()}."

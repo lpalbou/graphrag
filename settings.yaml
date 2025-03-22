@@ -1,0 +1,58 @@
+### This config file contains required core defaults that must be set, along with a handful of common optional settings.
+### For a full list of available settings, see https://microsoft.github.io/graphrag/config/yaml/
+
+### LLM settings ###
+## There are a number of settings to tune the threading and token limits for LLM calls - check the docs.
+
+models:
+  default_chat_model:
+    type: anthropic_chat 
+    api_key: ${ANTHROPIC_API_KEY} # set this in the .env file
+    model: claude-3.5-haiku-20241022
+    max_tokens: 4000
+    temperature: 0.7
+    top_p: 0.95
+    concurrent_requests: 4
+    async_mode: threaded # or asyncio
+    retry_strategy: native
+    max_retries: -1      # set to -1 for dynamic retry logic
+    tokens_per_minute: 0  # set to 0 to disable rate limiting
+    requests_per_minute: 0 # set to 0 to disable rate limiting
+  default_embedding_model:
+    type: anthropic_embedding
+    api_key: ${ANTHROPIC_API_KEY}
+    model: claude-3.5-haiku-20241022
+    concurrent_requests: 4
+    async_mode: threaded
+    retry_strategy: native
+    max_retries: -1
+    tokens_per_minute: 0
+    requests_per_minute: 0
+
+vector_store:
+  default_vector_store:
+    type: lancedb
+    db_uri: output/lancedb
+    container_name: default
+    overwrite: True
+
+# Connect embedding model to vector store
+embed_text:
+  model_id: default_embedding_model
+  vector_store_id: default_vector_store
+
+### Added explicit embeddings section
+embeddings:
+  llm:
+    model_id: default_embedding_model
+  vector_store:
+    type: lancedb
+    db_uri: output/lancedb
+    container_name: default
+    overwrite: True
+
+extract_graph:
+  model_id: default_chat_model
+  prompt: "prompts/extract_graph.txt"
+  entity_types: [organization,person,geo,event]
+  max_gleanings: 1 

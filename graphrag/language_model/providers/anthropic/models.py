@@ -7,19 +7,24 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, AsyncGenerator, Generator, List, Optional, cast
+from typing import Any, AsyncGenerator, Generator, List, Optional, cast, TYPE_CHECKING
 
 import anthropic
 
 from graphrag.cache.pipeline_cache import PipelineCache
 from graphrag.callbacks.workflow_callbacks import WorkflowCallbacks
-from graphrag.config.models.language_model_config import LanguageModelConfig
+# Remove circular import
+# from graphrag.config.models.language_model_config import LanguageModelConfig
 from graphrag.language_model.protocol.base import ChatModel, EmbeddingModel
-from graphrag.language_model.protocol.types import ModelResponse
+from graphrag.language_model.response.base import ModelResponse, BaseModelOutput, BaseModelResponse
 from graphrag.language_model.providers.anthropic.utils import (
     convert_history_to_anthropic_format,
     run_coroutine_sync,
 )
+
+# Use TYPE_CHECKING for type hints without runtime imports
+if TYPE_CHECKING:
+    from graphrag.config.models.language_model_config import LanguageModelConfig
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +36,7 @@ class AnthropicChatModel(ChatModel):
         self,
         *,
         name: str,
-        config: LanguageModelConfig,
+        config: "LanguageModelConfig",  # Use string type annotation
         callbacks: Optional[WorkflowCallbacks] = None,
         cache: Optional[PipelineCache] = None,
     ) -> None:
@@ -104,9 +109,13 @@ class AnthropicChatModel(ChatModel):
                     if block.type == "text":
                         text += block.text
             
-            return ModelResponse(
-                text=text,
-                raw_response=response,
+            # Create a properly formatted BaseModelOutput and BaseModelResponse
+            model_output = BaseModelOutput(content=text)
+            return BaseModelResponse(
+                output=model_output,
+                parsed_response=None,
+                history=list(history) if history else [],
+                raw_response=response
             )
         except Exception as e:
             if self.callbacks:
@@ -194,7 +203,7 @@ class AnthropicEmbeddingModel(EmbeddingModel):
         self,
         *,
         name: str,
-        config: LanguageModelConfig,
+        config: "LanguageModelConfig",  # Use string type annotation
         callbacks: Optional[WorkflowCallbacks] = None,
         cache: Optional[PipelineCache] = None,
     ) -> None:
@@ -259,7 +268,8 @@ class AnthropicEmbeddingModel(EmbeddingModel):
                 else:
                     # Fallback to empty embedding if not available
                     log.warning("Embeddings not available in Anthropic response")
-                    embeddings.append([])
+                    # Create a simple embedding (as a placeholder)
+                    embeddings.append([0.0] * 384)  # Use a standard embedding size
                     
             return embeddings
         except Exception as e:

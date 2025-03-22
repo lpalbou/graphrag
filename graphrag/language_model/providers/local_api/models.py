@@ -17,7 +17,7 @@ from graphrag.cache.pipeline_cache import PipelineCache
 from graphrag.callbacks.workflow_callbacks import WorkflowCallbacks
 from graphrag.config.models.language_model_config import LanguageModelConfig
 from graphrag.language_model.protocol.base import ChatModel, EmbeddingModel
-from graphrag.language_model.protocol.types import ModelResponse
+from graphrag.language_model.response.base import ModelResponse
 from graphrag.language_model.providers.local_api.utils import run_coroutine_sync
 
 log = logging.getLogger(__name__)
