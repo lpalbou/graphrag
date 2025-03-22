@@ -118,6 +118,12 @@ class ModelType(str, Enum):
     # Anthropic
     AnthropicChat = "anthropic_chat"
     AnthropicEmbedding = "anthropic_embedding"
+    
+    # Voyage AI
+    VoyageEmbedding = "voyage_embedding"
+    
+    # Local Sentence Transformer
+    SentenceTransformerEmbedding = "sentence_transformer_embedding"
 
     # Debug
     MockChat = "mock_chat"

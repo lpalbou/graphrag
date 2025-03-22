@@ -22,6 +22,12 @@ from graphrag.language_model.providers.local_api.models import (
     LocalAPIChatModel,
     LocalAPIEmbeddingModel,
 )
+from graphrag.language_model.providers.voyage.models import (
+    VoyageEmbeddingModel,
+)
+from graphrag.language_model.providers.sentence_transformer.models import (
+    SentenceTransformerEmbeddingModel,
+)
 
 
 class ModelFactory:
@@ -135,4 +141,14 @@ ModelFactory.register_chat(
 )
 ModelFactory.register_embedding(
     ModelType.AnthropicEmbedding, lambda **kwargs: AnthropicEmbeddingModel(**kwargs)
+)
+
+# --- Register Voyage AI implementations ---
+ModelFactory.register_embedding(
+    ModelType.VoyageEmbedding, lambda **kwargs: VoyageEmbeddingModel(**kwargs)
+)
+
+# --- Register SentenceTransformer implementations ---
+ModelFactory.register_embedding(
+    ModelType.SentenceTransformerEmbedding, lambda **kwargs: SentenceTransformerEmbeddingModel(**kwargs)
 )
