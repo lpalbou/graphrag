@@ -59,9 +59,9 @@ See [RAI_TRANSPARENCY.md](./RAI_TRANSPARENCY.md)
 
 - [What is GraphRAG?](./RAI_TRANSPARENCY.md#what-is-graphrag)
 - [What can GraphRAG do?](./RAI_TRANSPARENCY.md#what-can-graphrag-do)
-- [What are GraphRAG’s intended use(s)?](./RAI_TRANSPARENCY.md#what-are-graphrags-intended-uses)
+- [What are GraphRAG's intended use(s)?](./RAI_TRANSPARENCY.md#what-are-graphrags-intended-uses)
 - [How was GraphRAG evaluated? What metrics are used to measure performance?](./RAI_TRANSPARENCY.md#how-was-graphrag-evaluated-what-metrics-are-used-to-measure-performance)
-- [What are the limitations of GraphRAG? How can users minimize the impact of GraphRAG’s limitations when using the system?](./RAI_TRANSPARENCY.md#what-are-the-limitations-of-graphrag-how-can-users-minimize-the-impact-of-graphrags-limitations-when-using-the-system)
+- [What are the limitations of GraphRAG? How can users minimize the impact of GraphRAG's limitations when using the system?](./RAI_TRANSPARENCY.md#what-are-the-limitations-of-graphrag-how-can-users-minimize-the-impact-of-graphrags-limitations-when-using-the-system)
 - [What operational factors and settings allow for effective and responsible use of GraphRAG?](./RAI_TRANSPARENCY.md#what-operational-factors-and-settings-allow-for-effective-and-responsible-use-of-graphrag)
 
 ## Trademarks
@@ -75,3 +75,12 @@ Any use of third-party trademarks or logos are subject to those third-party's po
 ## Privacy
 
 [Microsoft Privacy Statement](https://privacy.microsoft.com/en-us/privacystatement)
+
+## Extended LLM Support
+
+GraphRAG now includes support for additional LLM providers:
+
+- **Local API Provider**: Connect to locally hosted language models through a simple HTTP API
+- **Anthropic Provider**: Connect to Anthropic's Claude models
+
+For details and setup instructions, see [README_EXTENDED_LLM.md](README_EXTENDED_LLM.md).

@@ -312,3 +312,32 @@ Note: version releases in the 0.x.y range may introduce breaking changes.
 ## 0.1.0
 
 - minor: Initial Release
+
+# Added Extended LLM Provider Support
+
+## Features Added
+
+- Added support for connecting to locally hosted LLMs via a simple HTTP API
+  - New `LocalAPIChat` and `LocalAPIEmbedding` model types
+  - Customizable endpoints for generation and embedding
+  - Support for both synchronous and streaming generation
+  
+- Added support for Anthropic's Claude models
+  - New `AnthropicChat` and `AnthropicEmbedding` model types
+  - Full support for Claude's message-based API
+  - Placeholder implementation for embeddings
+
+## Implementation Details
+
+- Extended `ModelType` enum with new types
+- Created implementation classes for each provider
+- Added registration in the `ModelFactory`
+- Updated initialization templates with examples
+- Added documentation and example code
+
+## Examples & Documentation
+
+- Added `README_EXTENDED_LLM.md` with detailed documentation
+- Created example local API server implementation in `examples/local_api_server/`
+- Updated main README.md with information about the new capabilities
+- Added dependency information in `requirements-extended.txt`

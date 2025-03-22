@@ -1,0 +1,4 @@
+# Additional requirements for extended provider support
+anthropic>=0.18.0   # For Anthropic API support
+aiohttp>=3.8.5      # For async HTTP requests with Local API endpoint
+requests>=2.31.0    # For sync HTTP requests with Local API endpoint 

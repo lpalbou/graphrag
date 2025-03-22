@@ -111,6 +111,14 @@ class ModelType(str, Enum):
     OpenAIChat = "openai_chat"
     AzureOpenAIChat = "azure_openai_chat"
 
+    # Local API endpoint
+    LocalAPIChat = "local_api_chat"
+    LocalAPIEmbedding = "local_api_embedding"
+    
+    # Anthropic
+    AnthropicChat = "anthropic_chat"
+    AnthropicEmbedding = "anthropic_embedding"
+
     # Debug
     MockChat = "mock_chat"
     MockEmbedding = "mock_embedding"

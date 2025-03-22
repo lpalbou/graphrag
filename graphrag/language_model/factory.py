@@ -8,11 +8,19 @@ from typing import Any, ClassVar
 
 from graphrag.config.enums import ModelType
 from graphrag.language_model.protocol import ChatModel, EmbeddingModel
+from graphrag.language_model.providers.anthropic.models import (
+    AnthropicChatModel,
+    AnthropicEmbeddingModel,
+)
 from graphrag.language_model.providers.fnllm.models import (
     AzureOpenAIChatFNLLM,
     AzureOpenAIEmbeddingFNLLM,
     OpenAIChatFNLLM,
     OpenAIEmbeddingFNLLM,
+)
+from graphrag.language_model.providers.local_api.models import (
+    LocalAPIChatModel,
+    LocalAPIEmbeddingModel,
 )
 
 
@@ -111,4 +119,20 @@ ModelFactory.register_embedding(
 )
 ModelFactory.register_embedding(
     ModelType.OpenAIEmbedding, lambda **kwargs: OpenAIEmbeddingFNLLM(**kwargs)
+)
+
+# --- Register Local API implementations ---
+ModelFactory.register_chat(
+    ModelType.LocalAPIChat, lambda **kwargs: LocalAPIChatModel(**kwargs)
+)
+ModelFactory.register_embedding(
+    ModelType.LocalAPIEmbedding, lambda **kwargs: LocalAPIEmbeddingModel(**kwargs)
+)
+
+# --- Register Anthropic implementations ---
+ModelFactory.register_chat(
+    ModelType.AnthropicChat, lambda **kwargs: AnthropicChatModel(**kwargs)
+)
+ModelFactory.register_embedding(
+    ModelType.AnthropicEmbedding, lambda **kwargs: AnthropicEmbeddingModel(**kwargs)
 )

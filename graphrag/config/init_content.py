@@ -55,6 +55,42 @@ models:
     tokens_per_minute: 0              # set to 0 to disable rate limiting
     requests_per_minute: 0            # set to 0 to disable rate limiting
 
+  # Local API example (commented out)
+  # local_api_chat:
+  #   type: local_api_chat
+  #   api_base: "http://127.0.0.1:8000/generate" # or any other local endpoint
+  #   model: "local_model_name"
+  #   concurrent_requests: 4
+  #   max_tokens: 4000
+  #   temperature: 0.7
+  #   top_p: 0.95
+  #   request_timeout: 120
+
+  # Local API embedding example (commented out)
+  # local_api_embedding:
+  #   type: local_api_embedding
+  #   api_base: "http://127.0.0.1:8000/embeddings" # or any other local endpoint
+  #   model: "local_embedding_model" 
+  #   concurrent_requests: 4
+  #   request_timeout: 60
+
+  # Anthropic example (commented out)
+  # anthropic_chat:
+  #   type: anthropic_chat
+  #   api_key: ${GRAPHRAG_ANTHROPIC_API_KEY} # set this in the .env file
+  #   model: "claude-3.5-haiku-20241022" # or any other Claude model
+  #   max_tokens: 4000
+  #   temperature: 0.7
+  #   top_p: 0.95
+  #   concurrent_requests: 2
+
+  # Anthropic embedding example (commented out)
+  # anthropic_embedding:
+  #   type: anthropic_embedding
+  #   api_key: ${GRAPHRAG_ANTHROPIC_API_KEY} # set this in the .env file
+  #   model: "claude-3.5-haiku-20241022" # or any other Claude model
+  #   concurrent_requests: 2
+
 ### Input settings ###
 
 input:
@@ -167,4 +203,5 @@ basic_search:
 
 INIT_DOTENV = """\
 GRAPHRAG_API_KEY=<API_KEY>
+GRAPHRAG_ANTHROPIC_API_KEY=<ANTHROPIC_API_KEY>
 """
