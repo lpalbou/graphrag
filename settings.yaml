@@ -8,7 +8,8 @@ models:
   default_chat_model:
     type: anthropic_chat 
     api_key: ${ANTHROPIC_API_KEY} # set this in the .env file
-    model: claude-3.5-haiku-20241022
+    model: claude-3-5-haiku-20241022
+    encoding_model: cl100k_base
     max_tokens: 4000
     temperature: 0.7
     top_p: 0.95
@@ -19,9 +20,9 @@ models:
     tokens_per_minute: 0  # set to 0 to disable rate limiting
     requests_per_minute: 0 # set to 0 to disable rate limiting
   default_embedding_model:
-    type: anthropic_embedding
-    api_key: ${ANTHROPIC_API_KEY}
-    model: claude-3.5-haiku-20241022
+    type: sentence_transformer_embedding
+    model: all-MiniLM-L6-v2
+    encoding_model: cl100k_base
     concurrent_requests: 4
     async_mode: threaded
     retry_strategy: native
@@ -41,7 +42,129 @@ embed_text:
   model_id: default_embedding_model
   vector_store_id: default_vector_store
 
-### Added explicit embeddings section
+### Input settings ###
+
+input:
+  type: file # or blob
+  file_type: text # [csv, text, json]
+  base_dir: "input"
+
+chunks:
+  size: 1200
+  overlap: 100
+  group_by_columns: [id]
+
+### Output settings ###
+## If blob storage is specified in the following four sections,
+## connection_string and container_name must be provided
+
+cache:
+  type: file # [file, blob, cosmosdb]
+  base_dir: "cache"
+
+reporting:
+  type: file # [file, blob, cosmosdb]
+  base_dir: "logs"
+
+output:
+  type: file # [file, blob, cosmosdb]
+  base_dir: "output"
+
+### Workflow settings ###
+
+# Use explicit workflow sequence to avoid problematic components
+workflows:
+  - create_base_text_units
+  - create_final_documents
+  - extract_graph_nlp
+  - finalize_graph
+  - create_communities
+  - create_final_text_units
+  - create_community_reports_text
+  - generate_text_embeddings
+
+extract_graph:
+  model_id: default_chat_model
+  prompt: "prompts/extract_graph.txt"
+  entity_types: [organization,person,geo,event]
+  max_gleanings: 1
+  enabled: false
+
+summarize_descriptions:
+  model_id: default_chat_model
+  prompt: "prompts/summarize_descriptions.txt"
+  max_length: 500
+
+extract_graph_nlp:
+  normalize_edge_weights: true
+  text_analyzer:
+    extractor_type: regex_english # [regex_english, syntactic_parser, cfg]
+  concurrent_requests: 25
+
+community_reports:
+  model_id: default_chat_model
+  graph_prompt: "prompts/community_report_graph.txt"
+  text_prompt: "prompts/community_report_text.txt"
+  max_length: 2000
+  max_input_length: 8000
+
+cluster_graph:
+  max_cluster_size: 10
+
+# Disable prune_graph as it uses graspologic which has compatibility issues
+prune_graph:
+  enabled: false
+  min_node_freq: 2
+  min_node_degree: 1
+  min_edge_weight_pct: 40
+  remove_ego_nodes: false
+  lcc_only: false
+
+extract_claims:
+  enabled: false
+  model_id: default_chat_model
+  prompt: "prompts/extract_claims.txt"
+  description: "Any claims or facts that could be relevant to information discovery."
+  max_gleanings: 1
+
+# Disable embed_graph as it uses gensim Word2Vec which has compatibility issues
+embed_graph:
+  enabled: false
+
+umap:
+  enabled: false
+
+snapshots:
+  graphml: false
+  embeddings: false
+
+### Query settings ###
+## The prompt locations are required here, but each search method has a number of optional knobs that can be tuned.
+## See the config docs: https://microsoft.github.io/graphrag/config/yaml/#query
+
+local_search:
+  chat_model_id: default_chat_model
+  embedding_model_id: default_embedding_model
+  prompt: "prompts/local_search_system_prompt.txt"
+
+global_search:
+  chat_model_id: default_chat_model
+  map_prompt: "prompts/global_search_map_system_prompt.txt"
+  reduce_prompt: "prompts/global_search_reduce_system_prompt.txt"
+  knowledge_prompt: "prompts/global_search_knowledge_system_prompt.txt"
+
+drift_search:
+  chat_model_id: default_chat_model
+  embedding_model_id: default_embedding_model
+  prompt: "prompts/drift_search_system_prompt.txt"
+  reduce_prompt: "prompts/drift_search_reduce_prompt.txt"
+
+basic_search:
+  chat_model_id: default_chat_model
+  embedding_model_id: default_embedding_model
+  prompt: "prompts/basic_search_system_prompt.txt"
+
+### Modify embeddings configuration to include vector_store
 embeddings:
   llm:
     model_id: default_embedding_model
@@ -49,10 +172,4 @@ embeddings:
     type: lancedb
     db_uri: output/lancedb
     container_name: default
-    overwrite: True
-
-extract_graph:
-  model_id: default_chat_model
-  prompt: "prompts/extract_graph.txt"
-  entity_types: [organization,person,geo,event]
-  max_gleanings: 1 
+    overwrite: True 
